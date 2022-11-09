@@ -42,7 +42,7 @@ val = int(input("Please enter your choice.\n"))
 def AddNote():
     
     #The field where the NUMBER of the TXT file is specified.
-    path = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python"
+    path = "C:\\Users\\MUSTAFASALICI\\Desktop\\YL\\Python"
     NoteNumber = int(len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))]))
 
     #The field where the TITLE of the TXT file is specified.
@@ -78,7 +78,7 @@ def DeleteNote():
     os.remove(Del)
 
 def UpdateNote():
-    path = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python"
+    path = "C:\\Users\\MUSTAFASALICI\\Desktop\\YL\\Python"
     dirs = os.listdir(path)
     for note in dirs:
         if note.endswith(".txt"): # Prints only text file present folder
@@ -93,7 +93,7 @@ def UpdateNote():
         print("Note has not exist!")
 
 def ListNote():
-    path = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python"
+    path = "C:\\Users\\MUSTAFASALICI\\Desktop\\YL\\Python"
     dirs = os.listdir(path)
     for note in dirs:
         if note.endswith(".txt"): # Prints only text file present folder
