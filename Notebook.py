@@ -1,14 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 26 13:31:15 2022
-
-@author: MUSALICI
-"""
-
 import os, os.path
 import time
 import re
 from datetime import datetime
+import random
 
 print('Hello, ' + os.getlogin() + '! How are you?')
 
@@ -22,6 +16,7 @@ def InputDate():
     if(res is False):
         print("Please enter in the correct format! >>> (DD.MM.YYYY)")
         InputDate()
+    return Date
 
 Date = InputDate()
 
@@ -36,79 +31,91 @@ text = """
 0) Exit
 """
 print(text)
-
+path = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python\\Notepad.txt"
+TagPath = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python\\Tags.txt"
 val = int(input("Please enter your choice.\n"))
 
 def AddNote():
-    
     #The field where the NUMBER of the TXT file is specified.
-    path = "C:\\Users\\MUSTAFASALICI\\Desktop\\YL\\Python"
-    NoteNumber = int(len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))]))
+    NoteNumber = random.randint(1,1000)
 
     #The field where the TITLE of the TXT file is specified.
     NoteTitle = input("Please enter the title of your note's.\n")
     NoteTitle = NoteTitle + ".txt"
-    NewNote = open(NoteTitle, "a+")
 
     #The field where the CONTEXT of the TXT file is specified.
-    f = open(NoteTitle, "w")
-    f.write(input("Please enter the comment for your note's.\n"))
-    f.close()
-    f = open(NoteTitle, "r")
+    NoteComment = input("Please enter the comment for your note's.\n")
 
     #The field where the TITLE, NOTENUMBER, DATE and NOTETAG of the TXT file is stored.
-    NotesTextFile = open("Notes.txt", "r")
+    NotesTextFile = open(path, "r")
     print(NotesTextFile.read())
 
     #The field where the TAG of the TXT file is specified.
     NoteTag = input("Please enter the tag of your note's. You can choose one of the available tags or not at all.\n")
+    NoteTagNumber = random.randint(1,1000)
     if not NoteTag:
-        TagContents = str(NoteTitle) + "," + str(NoteNumber) + "\n"
+        NewNote = str(NoteTitle) + "," + str(NoteComment) +"," + str(NoteNumber) + "," + str(Date) + ",None" +"\n"
     else:
-        TagContents = str(NoteTitle) + "," + str(NoteNumber)+ "," +  str(NoteTag) + "\n"
-    t = open("Notes.txt", "a+")
-    t.writelines(TagContents)
-    t.close()
+        NewNote = str(NoteTitle) + "," + str(NoteComment) +"," + str(NoteNumber) + "," + str(Date) + "," + str(NoteTagNumber) + "\n"
+    
+    File = open(path, "a+")
+    File.write(NewNote)
+    File.close()
 
 def DeleteNote():
-    NotesTextFile = open("Notes.txt", "r")
-    print(NotesTextFile.read())
-    Del = input("Which txt file will be deleted?\n")
-    NotesTextFile = NotesTextFile.readlines()
-    os.remove(Del)
-
+    NotesTextFileRead = open(path, "r")
+    print(NotesTextFileRead.read())
+    OriginalFile = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python\\Notepad.txt"
+    TempFile = "C:\\Users\\TCMUSALICI\\Desktop\\YL\\Python\\TempNotepad.txt"
+    Del = str(input("Which txt file will be deleted? Please enter file's number!\n"))
+    with open(OriginalFile, "r") as input:
+        with open(TempFile, "w") as output:
+            # iterate all lines from file
+            for line in input:
+                # if substring contain in a line then don't write it
+                if Del not in line.strip("\n"):
+                    output.write(line)
+    for retry in range(100):
+        #access denied problems solved with this for loop
+        try:
+            # replace file with original name
+            os.replace(TempFile, OriginalFile)
+            break
+        except:
+            print ("Replace failed, retrying...")
+    
 def UpdateNote():
-    path = "C:\\Users\\MUSTAFASALICI\\Desktop\\YL\\Python"
-    dirs = os.listdir(path)
-    for note in dirs:
-        if note.endswith(".txt"): # Prints only text file present folder
-            print(note)
+    NotesTextFileRead = open(path, "r")
+    print(NotesTextFileRead.read())
     NoteName= input("Which note will be updated?\n")
-    if os.path.exists(NoteName):
-        f = open(NoteName, "a+")
-        Update = input("Please update your note.\n")
-        Update = "\n" + Update
-        f.write(Update)
-    else:
-        print("Note has not exist!")
+    NotesTextFileWrite = open(path, "w")
+    Update = input("Please update your note.\n")
+    with open(r'Notepad.txt', 'r') as file:
+        data = file.read()
+        data = data.replace(NoteName, Update)
+    with open(r'Notepad.txt', 'w') as file:
+        file.write(data)
 
 def ListNote():
-    path = "C:\\Users\\MUSTAFASALICI\\Desktop\\YL\\Python"
-    dirs = os.listdir(path)
-    for note in dirs:
-        if note.endswith(".txt"): # Prints only text file present folder
-            print(note)
+    File = open(path, "r")
+    for Line in File.readlines():
+        print(Line)
+    File.close()
 
 def AddTag():
-    print("Hello")
+    TagNumber = random.randint(1,1000)
+    NewTag = input("Please enter new tag.\n")
+    File = open("Tags.txt", "a")
+    File.write(str(TagNumber)+ "," + NewTag)
+    File.close()
     
 def DeleteTag():
-    File = open("Notes.txt", "r") #The field where the TAGS shown
+    File = open(path, "r") #The field where the TAGS shown
     for Line in File.readlines():
         CurrentLine = Line.split(",")
         print(CurrentLine[3])
 
-    File = open("Notes.txt", "r")
+    File = open(TagPath, "r")
     Del = str(input("Which tag will be deleted?\n"))
     for Line in File.readlines():
         print(Line)
@@ -121,10 +128,10 @@ def DeleteTag():
     File.close()
 
 def ListTag():
-    File = open("Notes.txt", "r")
+    File = open(path, "r")
     for Line in File.readlines():
         CurrentLine = Line.split(",")
-        print(CurrentLine[2])
+        print(CurrentLine[4])
     File.close()
 
 def Exit():
